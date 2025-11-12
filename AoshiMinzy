@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chọn và Kéo Thả Icon</title>
+  <!-- Nhúng Tailwind CSS từ CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Nhúng Font Awesome (phiên bản free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  <style>
+    /* Tùy chọn style cho vùng trái */
+    #leftArea { 
+      /* đặt kích thước ví dụ */
+      min-height: 500px; 
+    }
+  </style>
+</head>
+<body class="bg-white">
+  <div class="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+    <!-- Khu vực hiển thị icon (bên trái) -->
+    <div id="leftArea" class="relative bg-gray-50 border-r border-gray-300">
+      <!-- Icon sẽ được thêm vào đây -->
+    </div>
+    <!-- Khu vực điều khiển (bên phải) -->
+    <div class="p-4">
+      <!-- Các tab để chọn nhóm icon -->
+      <ul class="flex mb-4 border-b">
+        <li class="tab px-4 py-2 -mb-px text-blue-600 border-b-2 border-blue-600 cursor-pointer" data-tab="android">Android</li>
+        <li class="tab px-4 py-2 text-gray-600 hover:text-blue-600 border-b-2 border-transparent cursor-pointer" data-tab="ios">iOS</li>
+        <li class="tab px-4 py-2 text-gray-600 hover:text-blue-600 border-b-2 border-transparent cursor-pointer" data-tab="others">Thêm</li>
+      </ul>
+      <!-- Nội dung của từng tab (danh sách icon) -->
+      <div id="android" class="icon-list flex flex-wrap gap-4">
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fab fa-android">
+          <i class="fab fa-android text-2xl"></i>
+        </div>
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fab fa-linux">
+          <i class="fab fa-linux text-2xl"></i>
+        </div>
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fas fa-robot">
+          <i class="fas fa-robot text-2xl"></i>
+        </div>
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fab fa-google">
+          <i class="fab fa-google text-2xl"></i>
+        </div>
+      </div>
+      <div id="ios" class="icon-list flex flex-wrap gap-4 hidden">
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fab fa-apple">
+          <i class="fab fa-apple text-2xl"></i>
+        </div>
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fas fa-mobile-alt">
+          <i class="fas fa-mobile-alt text-2xl"></i>
+        </div>
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fas fa-tablet-alt">
+          <i class="fas fa-tablet-alt text-2xl"></i>
+        </div>
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fas fa-phone">
+          <i class="fas fa-phone text-2xl"></i>
+        </div>
+      </div>
+      <div id="others" class="icon-list flex flex-wrap gap-4 hidden">
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fas fa-star">
+          <i class="fas fa-star text-2xl"></i>
+        </div>
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fas fa-heart">
+          <i class="fas fa-heart text-2xl"></i>
+        </div>
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fas fa-camera">
+          <i class="fas fa-camera text-2xl"></i>
+        </div>
+        <div class="icon-option p-2 border border-gray-300 rounded cursor-pointer" data-classes="fas fa-music">
+          <i class="fas fa-music text-2xl"></i>
+        </div>
+      </div>
+      <!-- Chọn màu và kích thước -->
+      <div class="mt-4">
+        <label class="block mb-2">Chọn màu:</label>
+        <input type="color" id="colorPicker" value="#000000" class="border border-gray-300 rounded p-1">
+      </div>
+      <div class="mt-4">
+        <label class="block mb-2">Kích thước (px):</label>
+        <input type="number" id="sizeInput" value="32" min="8" class="border border-gray-300 rounded p-1 w-24">
+      </div>
+      <!-- Nút tạo icon -->
+      <button id="createBtn" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Tạo</button>
+    </div>
+  </div>
+
+  <script>
+    // Xử lý hiển thị tab và chọn icon
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Đổi tab được chọn (màu và border)
+        document.querySelectorAll('.tab').forEach(t => {
+          t.classList.remove('border-blue-600', 'text-blue-600');
+          t.classList.add('border-transparent', 'text-gray-600');
+        });
+        this.classList.add('border-blue-600', 'text-blue-600');
+        this.classList.remove('border-transparent');
+
+        // Hiện/ẩn nhóm icon tương ứng
+        let target = this.dataset.tab;
+        document.querySelectorAll('.icon-list').forEach(list => {
+          list.classList.add('hidden');
+        });
+        document.getElementById(target).classList.remove('hidden');
+
+        // Xoá chọn icon cũ
+        document.querySelectorAll('.icon-option').forEach(opt => {
+          opt.classList.remove('ring-4','ring-blue-500');
+        });
+        selectedIconClasses = ''; // reset lựa chọn
+      });
+    });
+    // Khởi tạo: chọn tab Android mặc định
+    document.querySelector('[data-tab="android"]').click();
+
+    // Biến lưu class icon được chọn
+    let selectedIconClasses = '';
+    // Xử lý chọn icon
+    document.querySelectorAll('.icon-option').forEach(item => {
+      item.addEventListener('click', function() {
+        // Bỏ highlight ở icon khác
+        document.querySelectorAll('.icon-option').forEach(x => {
+          x.classList.remove('ring-4','ring-blue-500');
+        });
+        // Đánh dấu icon hiện tại
+        this.classList.add('ring-4','ring-blue-500');
+        // Lưu class icon đã chọn (đầy đủ)
+        selectedIconClasses = this.dataset.classes;
+      });
+    });
+
+    // Hàm tạo icon và thêm vào khu vực trái
+    function createIcon() {
+      if (!selectedIconClasses) {
+        alert('Vui lòng chọn biểu tượng trước khi tạo.');
+        return;
+      }
+      let color = document.getElementById('colorPicker').value;
+      let size = document.getElementById('sizeInput').value;
+      // Tạo phần tử <i> mới cho icon
+      let icon = document.createElement('i');
+      icon.className = selectedIconClasses;
+      icon.style.color = color;
+      icon.style.fontSize = size + 'px';
+      icon.style.position = 'absolute';
+      icon.style.left = '10px';
+      icon.style.top = '10px';
+      icon.style.cursor = 'move';
+      icon.style.zIndex = 0;
+      // Cho phép kéo thả
+      icon.onmousedown = function(event) {
+        // Lấy vị trí tương đối bên trong vùng leftArea
+        let area = document.getElementById('leftArea').getBoundingClientRect();
+        let iconRect = icon.getBoundingClientRect();
+        let shiftX = event.clientX - iconRect.left;
+        let shiftY = event.clientY - iconRect.top;
+        icon.style.zIndex = 1000; // đưa lên trên
+        function moveAt(e) {
+          let newLeft = e.clientX - area.left - shiftX;
+          let newTop = e.clientY - area.top - shiftY;
+          // Giới hạn nếu cần, ở đây để trong vùng leftArea
+          newLeft = Math.max(0, Math.min(newLeft, area.width - iconRect.width));
+          newTop = Math.max(0, Math.min(newTop, area.height - iconRect.height));
+          icon.style.left = newLeft + 'px';
+          icon.style.top = newTop + 'px';
+        }
+        // Di chuyển khi di chuột
+        function onMouseMove(e) {
+          moveAt(e);
+        }
+        document.addEventListener('mousemove', onMouseMove);
+        // Kết thúc kéo
+        icon.onmouseup = function() {
+          document.removeEventListener('mousemove', onMouseMove);
+          icon.onmouseup = null;
+        };
+        // Ngăn trình duyệt mặc định khi kéo thả
+        icon.ondragstart = function() { return false; };
+      };
+      // Thêm icon mới vào khu vực trái
+      document.getElementById('leftArea').appendChild(icon);
+    }
+    // Gán sự kiện cho nút tạo icon
+    document.getElementById('createBtn').addEventListener('click', createIcon);
+  </script>
+</body>
+</html>
